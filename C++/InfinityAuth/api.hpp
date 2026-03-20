@@ -6,12 +6,22 @@
 
 namespace InfinityAuthV2 {
 
+    struct Subscription {
+        std::string subscription;
+        int level;
+        std::string expiry;
+        int timeleft;
+    };
+
     struct Response {
         bool success;
         std::string message;
         struct {
             std::string username;
             std::string hwid;
+            std::string createdate;
+            std::string lastlogin;
+            std::vector<Subscription> subscriptions;
         } info;
     };
 

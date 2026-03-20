@@ -12,10 +12,23 @@ O **InfinityAuth** é um ecossistema de autenticação de altíssima segurança 
 
 ## 🚀 Principais Inovações
 
-- **Criptografia Dinâmica (AES-256-CBC):** Geração randômica de Vetor de Inicialização (IV) a cada milissegundo de trânsito de pacotes (Imune a Replay Attacks).
+- **Criptografia Dinâmica (AES-256-CBC):** Geração randômica de Vetor de Inicialização (IV) a cada milissegundo de trânsito de pacetes (Imune a Replay Attacks).
 - **Hardware ID (HWID) Nativo:** Tranca as sessões literalmente na placa-mãe do usuário via WMI/WinAPI, impedindo o compartilhamento ilícito de contas de forma impenetrável.
 - **Fail-Safe Timeout:** Arquitetura à prova de Crash. Evita que a interface (UI) da sua aplicação congele ou trave em decorrência de eventuais picos de rede/servidor.
 - **Cross-App Protection:** O Motor Backend garante repúdio absoluto de anomalias, blindando as instâncias contra escalonamento de privilégios.
+- **Sistema de Assinaturas Multinível:** Suporte nativo para hierarquias de acesso (ex: Gold, Platinum, Internal) que podem habilitar recursos dinamicamente no cliente.
+
+---
+
+## 🏆 Sistema de Níveis e Permissões (Subscriptions)
+
+A grande vantagem do **InfinityAuth** é a capacidade de gerenciar múltiplos projetos dentro de um único Loader. Você pode criar assinaturas no seu Dashboard e atribuir níveis (Levels) a elas. O cliente pode verificar esses níveis para decidir o que liberar:
+
+- **INTERNAL (Level 4):** Acesso administrativo/total.
+- **EXTERNAL (Level 2):** Versão padrão para usuários.
+- **BYPASS SS (Level 1):** Acesso restrito a bypasses específicos.
+
+A SDK C# agora fornece métodos simplificados para lidar com isso automaticamente.
 
 ---
 
@@ -45,10 +58,28 @@ public static InfinityAuth api = new InfinityAuth(
 // No evento Load (Inicialização):
 api.Init();
 
-// Exemplo de Login Assíncrono/Síncrono:
+// Exemplo de Login e Verificação de Subscrição:
 var resp = api.Login("usuario", "senha");
 if (resp.success) {
     Console.WriteLine("Login efetuado! Bem-vindo " + resp.info.username);
+    
+    // Pegar o índice da melhor assinatura do usuário
+    int subIndex = api.GetActiveSubscriptionIndex();
+    
+    if (subIndex != -1) {
+        var sub = resp.info.subscriptions[subIndex];
+        Console.WriteLine($"Plano Atual: {sub.subscription} (Nível {sub.level})");
+        
+        if (api.IsLifetime(subIndex))
+            Console.WriteLine("Validade: Vitalícia");
+        else
+            Console.WriteLine($"Segundos Restantes: {api.GetSecondsLeft(subIndex)}");
+            
+        // Lógica de Negócio do seu App:
+        if (sub.level >= 4) {
+            // Habilita botões secretos
+        }
+    }
 }
 ```
 
