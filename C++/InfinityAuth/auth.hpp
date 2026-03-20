@@ -10,4 +10,5 @@ static std::string secret = "SeuSecret"; // Novo em V3
 static std::string version = "1.0";
 
 // Instância Global para uso em todo o projeto
-static InfinityAuthV2::API auth(name, ownerid, secret, version);
+// IMPORTANTE: Declare "InfinityAuthApp InfinityApp;" no seu main.cpp ou arquivo principal.
+extern InfinityAuthApp InfinityApp;
