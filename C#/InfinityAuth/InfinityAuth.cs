@@ -116,6 +116,38 @@ namespace InfinityAuth
             });
         }
 
+        public int GetActiveSubscriptionIndex()
+        {
+            if (user_data == null || user_data.subscriptions == null || user_data.subscriptions.Count == 0)
+                return -1;
+
+            int bestIndex = 0;
+            int maxLevel = -1;
+
+            for (int i = 0; i < user_data.subscriptions.Count; i++)
+            {
+                if (user_data.subscriptions[i].level > maxLevel)
+                {
+                    maxLevel = user_data.subscriptions[i].level;
+                    bestIndex = i;
+                }
+            }
+            return bestIndex;
+        }
+
+        public bool IsLifetime(int index)
+        {
+            if (user_data == null || index < 0 || index >= user_data.subscriptions.Count) return false;
+            var sub = user_data.subscriptions[index];
+            return sub.expiry.ToLower().Contains("lifetime") || sub.timeleft == -1;
+        }
+
+        public long GetSecondsLeft(int index)
+        {
+            if (user_data == null || index < 0 || index >= user_data.subscriptions.Count) return 0;
+            return user_data.subscriptions[index].timeleft;
+        }
+
         // --- Helpers ---
 
         private string GetHwid()
@@ -271,6 +303,7 @@ namespace InfinityAuth
         public class Subscription
         {
             public string subscription { get; set; }
+            public int level { get; set; }
             public string expiry { get; set; }
             public int timeleft { get; set; }
         }

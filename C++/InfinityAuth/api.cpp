@@ -66,6 +66,19 @@ namespace InfinityAuthV2 {
                 auto info = j["info"];
                 res.info.username = info.value("username", "");
                 res.info.hwid = info.value("hwid", "");
+                res.info.createdate = info.value("createdate", "");
+                res.info.lastlogin = info.value("lastlogin", "");
+                
+                if (info.contains("subscriptions") && info["subscriptions"].is_array()) {
+                    for (auto& s : info["subscriptions"]) {
+                        Subscription sub;
+                        sub.subscription = s.value("subscription", "");
+                        sub.level = s.value("level", 1);
+                        sub.expiry = s.value("expiry", "");
+                        sub.timeleft = s.value("timeleft", 0);
+                        res.info.subscriptions.push_back(sub);
+                    }
+                }
             }
         } catch (...) { res.success = false; res.message = "JSON Error"; }
         this->response = res;
@@ -87,6 +100,24 @@ namespace InfinityAuthV2 {
             json j = json::parse(raw);
             res.success = j.value("success", false);
             res.message = j.value("message", "");
+            if (res.success && j.contains("info")) {
+                auto info = j["info"];
+                res.info.username = info.value("username", "");
+                res.info.hwid = info.value("hwid", "");
+                res.info.createdate = info.value("createdate", "");
+                res.info.lastlogin = info.value("lastlogin", "");
+                
+                if (info.contains("subscriptions") && info["subscriptions"].is_array()) {
+                    for (auto& s : info["subscriptions"]) {
+                        Subscription sub;
+                        sub.subscription = s.value("subscription", "");
+                        sub.level = s.value("level", 1);
+                        sub.expiry = s.value("expiry", "");
+                        sub.timeleft = s.value("timeleft", 0);
+                        res.info.subscriptions.push_back(sub);
+                    }
+                }
+            }
         } catch (...) { res.success = false; }
         this->response = res;
         return res.success;
@@ -109,6 +140,19 @@ namespace InfinityAuthV2 {
                 auto info = j["info"];
                 res.info.username = info.value("username", "");
                 res.info.hwid = info.value("hwid", "");
+                res.info.createdate = info.value("createdate", "");
+                res.info.lastlogin = info.value("lastlogin", "");
+                
+                if (info.contains("subscriptions") && info["subscriptions"].is_array()) {
+                    for (auto& s : info["subscriptions"]) {
+                        Subscription sub;
+                        sub.subscription = s.value("subscription", "");
+                        sub.level = s.value("level", 1);
+                        sub.expiry = s.value("expiry", "");
+                        sub.timeleft = s.value("timeleft", 0);
+                        res.info.subscriptions.push_back(sub);
+                    }
+                }
             }
         } catch (...) { res.success = false; }
         this->response = res;
@@ -201,7 +245,7 @@ namespace InfinityAuthV2 {
         // Gerar o Hash SHA256 da Secret
         BYTE keyHash[32];
         DWORD dwHashLen = 32;
-        if (CryptCreateHash(hProv, CALG_SHA_25_6, 0, 0, &hHash)) {
+        if (CryptCreateHash(hProv, CALG_SHA_256, 0, 0, &hHash)) {
             CryptHashData(hHash, (BYTE*)key_str.c_str(), key_str.length(), 0);
             CryptGetHashParam(hHash, HP_HASHVAL, keyHash, &dwHashLen, 0);
             CryptDestroyHash(hHash);
@@ -266,7 +310,7 @@ namespace InfinityAuthV2 {
 
         BYTE keyHash[32];
         DWORD dwHashLen = 32;
-        if (CryptCreateHash(hProv, CALG_SHA_25_6, 0, 0, &hHash)) {
+        if (CryptCreateHash(hProv, CALG_SHA_256, 0, 0, &hHash)) {
             CryptHashData(hHash, (BYTE*)key_str.c_str(), key_str.length(), 0);
             CryptGetHashParam(hHash, HP_HASHVAL, keyHash, &dwHashLen, 0);
             CryptDestroyHash(hHash);
