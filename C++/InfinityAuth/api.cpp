@@ -1,6 +1,6 @@
 #include "api.hpp"
 #include "json.hpp"
-#include <curl/curl.h>
+#include "Curl/curl.h"
 #include <windows.h>
 #include <iomanip>
 #include <sstream>
@@ -16,12 +16,25 @@ namespace InfinityAuthV2 {
         curl_global_init(CURL_GLOBAL_DEFAULT);
     }
 
+    void API::setup() {
+        init();
+    }
+
+    void API::setup(std::string name, std::string ownerid, std::string secret, std::string version) {
+        this->name = name;
+        this->ownerid = ownerid;
+        this->secret = secret;
+        this->version = version;
+        init();
+    }
+
     static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
         ((std::string*)userp)->append((char*)contents, size * nmemb);
         return size * nmemb;
     }
 
     void API::init() {
+        if (name.empty()) return; 
         std::map<std::string, std::string> params;
         params["type"] = "init";
         params["ver"] = version;
@@ -35,7 +48,7 @@ namespace InfinityAuthV2 {
         } catch (...) {}
     }
 
-    Response API::login(std::string username, std::string password) {
+    bool API::login(std::string username, std::string password) {
         std::map<std::string, std::string> params;
         params["type"] = "login";
         params["username"] = username;
@@ -55,10 +68,11 @@ namespace InfinityAuthV2 {
                 res.info.hwid = info.value("hwid", "");
             }
         } catch (...) { res.success = false; res.message = "JSON Error"; }
-        return res;
+        this->response = res;
+        return res.success;
     }
 
-    Response API::register_user(std::string username, std::string password, std::string key) {
+    bool API::register_user(std::string username, std::string password, std::string key) {
         std::map<std::string, std::string> params;
         params["type"] = "register";
         params["username"] = username;
@@ -74,10 +88,11 @@ namespace InfinityAuthV2 {
             res.success = j.value("success", false);
             res.message = j.value("message", "");
         } catch (...) { res.success = false; }
-        return res;
+        this->response = res;
+        return res.success;
     }
 
-    Response API::license(std::string key) {
+    bool API::license(std::string key) {
         std::map<std::string, std::string> params;
         params["type"] = "license";
         params["key"] = key;
@@ -96,7 +111,8 @@ namespace InfinityAuthV2 {
                 res.info.hwid = info.value("hwid", "");
             }
         } catch (...) { res.success = false; }
-        return res;
+        this->response = res;
+        return res.success;
     }
 
     std::string API::get_var(std::string var_name) {
@@ -308,4 +324,3 @@ namespace InfinityAuthV2 {
         return res;
     }
 }
-`

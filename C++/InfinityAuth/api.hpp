@@ -17,12 +17,18 @@ namespace InfinityAuthV2 {
 
     class API {
     public:
+        API() = default;
         API(std::string name, std::string ownerid, std::string secret, std::string version);
 
         void init();
-        Response login(std::string username, std::string password);
-        Response register_user(std::string username, std::string password, std::string key);
-        Response license(std::string key);
+        void setup();
+        void setup(std::string name, std::string ownerid, std::string secret, std::string version);
+        
+        bool login(std::string username, std::string password);
+        bool register_user(std::string username, std::string password, std::string key);
+        bool license(std::string key);
+        
+        Response response;
         
         // V3 Novidades
         std::string get_var(std::string var_name);
@@ -44,3 +50,6 @@ namespace InfinityAuthV2 {
         std::vector<unsigned char> from_hex(std::string hex);
     };
 }
+
+using InfinityAuthApp = InfinityAuthV2::API;
+using api = InfinityAuthV2::API;
