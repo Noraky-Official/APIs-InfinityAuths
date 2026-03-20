@@ -20,6 +20,7 @@ class InfinityAuth:
         self.version = version
         self.sessionid = None
         self.initialized = False
+        self.user_data = None
         self.api_url = "https://infinityauth.shardweb.app/api/InfinityAuth/"
 
     def init(self):
@@ -37,13 +38,16 @@ class InfinityAuth:
 
     def login(self, username, password):
         """Realiza login por usuário e senha"""
-        return self._send_request({
+        resp = self._send_request({
             "type": "login",
             "username": username,
             "pass": password,
             "hwid": self.get_hwid(),
             "sessionid": self.sessionid
         })
+        if resp.get("success") and resp.get("info"):
+            self.user_data = resp["info"]
+        return resp
 
     def register(self, username, password, key):
         """Registra novo usuário usando uma licença"""
@@ -57,11 +61,43 @@ class InfinityAuth:
 
     def license(self, key):
         """Login direto usando apenas a chave de licença"""
-        return self._send_request({
+        resp = self._send_request({
             "type": "license",
             "key": key,
             "hwid": self.get_hwid()
         })
+        if resp.get("success") and resp.get("info"):
+            self.user_data = resp["info"]
+        return resp
+
+    def get_active_subscription_index(self):
+        """Retorna o índice da assinatura com maior level"""
+        if not self.user_data or not self.user_data.get("subscriptions"):
+            return -1
+        
+        subscriptions = self.user_data["subscriptions"]
+        best_index = 0
+        max_level = -1
+        
+        for i, sub in enumerate(subscriptions):
+            level = sub.get("level", 1)
+            if level > max_level:
+                max_level = level
+                best_index = i
+        return best_index
+
+    def is_lifetime(self, index):
+        """Verifica se a assinatura no índice especificado é vitalícia"""
+        if not self.user_data or index < 0 or index >= len(self.user_data.get("subscriptions", [])):
+            return False
+        sub = self.user_data["subscriptions"][index]
+        return "lifetime" in str(sub.get("expiry", "")).lower() or sub.get("timeleft") == -1
+
+    def get_seconds_left(self, index):
+        """Retorna os segundos restantes da assinatura no índice especificado"""
+        if not self.user_data or index < 0 or index >= len(self.user_data.get("subscriptions", [])):
+            return 0
+        return self.user_data["subscriptions"][index].get("timeleft", 0)
 
     def var(self, var_name):
         """Recupera uma variável segura do servidor"""
