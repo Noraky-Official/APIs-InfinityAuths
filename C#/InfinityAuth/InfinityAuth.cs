@@ -11,14 +11,16 @@ using Newtonsoft.Json;
 
 namespace InfinityAuth
 {
-    public class InfinityAuth
+    public class api
     {
         public string name, ownerid, secret, version;
+        public Response response;
+        public UserInfo user_data;
         private string sessionid;
         private bool initialized = false;
         private const string ApiUrl = "https://infinityauth.shardweb.app/api/InfinityAuth/";
 
-        public InfinityAuth(string name, string ownerid, string secret, string version)
+        public api(string name, string ownerid, string secret, string version)
         {
             this.name = name;
             this.ownerid = ownerid;
@@ -26,29 +28,24 @@ namespace InfinityAuth
             this.version = version;
         }
 
-        public void Init()
+        public void init()
         {
-            var response = SendRequest(new NameValueCollection
+            this.response = SendRequest(new NameValueCollection
             {
                 ["type"] = "init",
                 ["ver"] = version
             });
 
-            if (response.success)
+            if (this.response.success)
             {
-                sessionid = response.sessionid;
+                sessionid = this.response.sessionid;
                 initialized = true;
-            }
-            else
-            {
-                MessageBox("Erro de inicialização: " + response.message);
-                Process.GetCurrentProcess().Kill();
             }
         }
 
-        public Response Login(string user, string pass)
+        public void login(string user, string pass)
         {
-            return SendRequest(new NameValueCollection
+            this.response = SendRequest(new NameValueCollection
             {
                 ["type"] = "login",
                 ["username"] = user,
@@ -56,11 +53,13 @@ namespace InfinityAuth
                 ["hwid"] = GetHwid(),
                 ["sessionid"] = sessionid
             });
+            if (this.response.success && this.response.info != null)
+                this.user_data = this.response.info;
         }
 
-        public Response Register(string user, string pass, string key)
+        public void register(string user, string pass, string key)
         {
-            return SendRequest(new NameValueCollection
+            this.response = SendRequest(new NameValueCollection
             {
                 ["type"] = "register",
                 ["username"] = user,
@@ -70,14 +69,16 @@ namespace InfinityAuth
             });
         }
 
-        public Response License(string key)
+        public void license(string key)
         {
-            return SendRequest(new NameValueCollection
+            this.response = SendRequest(new NameValueCollection
             {
                 ["type"] = "license",
                 ["key"] = key,
                 ["hwid"] = GetHwid()
             });
+            if (this.response.success && this.response.info != null)
+                this.user_data = this.response.info;
         }
 
         public string GetVar(string varName)
