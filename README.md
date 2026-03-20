@@ -8,9 +8,9 @@
 
 ## 🎯 O que é o InfinityAuth?
 
-O **InfinityAuth** é um ecossistema de autenticação de altíssima segurança projetado do zero por **Noraky**. Diferente de soluções open-source genéricas, a versão 3 (V3) implementa **End-to-End Encryption (E2EE)** nativa com pacotes de tráfego mutáveis. Isso significa que o Payload entre a sua Aplicação Cliente e o nosso Servidor NodeJS nunca será o mesmo duas vezes.
+O **InfinityAuth** é um ecossistema de autenticação de altíssima segurança projetado do zero por **Noraky**. Diferente de soluções open-source genéricas, a versão 1.0 implementa **End-to-End Encryption (E2EE)** nativa com pacotes de tráfego mutáveis. Isso significa que o Payload entre a sua Aplicação Cliente e o nosso Servidor NodeJS nunca será o mesmo duas vezes.
 
-## 🚀 Principais Inovações (V3)
+## 🚀 Principais Inovações
 
 - **Criptografia Dinâmica (AES-256-CBC):** Geração randômica de Vetor de Inicialização (IV) a cada milissegundo de trânsito de pacotes (Imune a Replay Attacks).
 - **Hardware ID (HWID) Nativo:** Tranca as sessões literalmente na placa-mãe do usuário via WMI/WinAPI, impedindo o compartilhamento ilícito de contas de forma impenetrável.
@@ -70,7 +70,7 @@ static std::string secret = "SeuSecret";
 static std::string version = "1.0";
 ```
 
-2. Invoque os comandos a partir de qualquer ponto da sua Thread:
+1. Invoque os comandos a partir de qualquer ponto da sua Thread:
 
 ```cpp
 #include "auth.hpp"
@@ -110,7 +110,7 @@ if resp.get("success"):
 
 ---
 
-## 📦 Webhooks e Variáveis Restritas (V3)
+## 📦 Webhooks e Variáveis Restritas
 
 Além de licenças e logins convencionais, as SDKs agora suportam nativamente a recuperação de strings hiper-restritas diretamente do banco de dados na nuvem (útil para links ocultos de download ou bytes de arquivos) com segurança máxima.
 
