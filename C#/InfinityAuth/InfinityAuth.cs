@@ -20,6 +20,8 @@ namespace InfinityAuth
         private bool initialized = false;
         private const string ApiUrl = "https://infinityauth.shardweb.app/api/InfinityAuth/";
 
+        public api() { }
+
         public api(string name, string ownerid, string secret, string version)
         {
             this.name = name;
@@ -27,6 +29,17 @@ namespace InfinityAuth
             this.secret = secret;
             this.version = version;
         }
+
+        public void setup(string name, string ownerid, string secret, string version)
+        {
+            this.name = name;
+            this.ownerid = ownerid;
+            this.secret = secret;
+            this.version = version;
+            init();
+        }
+
+        public void setup() => init();
 
         public void init()
         {
