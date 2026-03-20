@@ -201,7 +201,7 @@ namespace InfinityAuthV2 {
         // Gerar o Hash SHA256 da Secret
         BYTE keyHash[32];
         DWORD dwHashLen = 32;
-        if (CryptCreateHash(hProv, CALG_SHA_256, 0, 0, &hHash)) {
+        if (CryptCreateHash(hProv, CALG_SHA_25_6, 0, 0, &hHash)) {
             CryptHashData(hHash, (BYTE*)key_str.c_str(), key_str.length(), 0);
             CryptGetHashParam(hHash, HP_HASHVAL, keyHash, &dwHashLen, 0);
             CryptDestroyHash(hHash);
@@ -266,7 +266,7 @@ namespace InfinityAuthV2 {
 
         BYTE keyHash[32];
         DWORD dwHashLen = 32;
-        if (CryptCreateHash(hProv, CALG_SHA_256, 0, 0, &hHash)) {
+        if (CryptCreateHash(hProv, CALG_SHA_25_6, 0, 0, &hHash)) {
             CryptHashData(hHash, (BYTE*)key_str.c_str(), key_str.length(), 0);
             CryptGetHashParam(hHash, HP_HASHVAL, keyHash, &dwHashLen, 0);
             CryptDestroyHash(hHash);
