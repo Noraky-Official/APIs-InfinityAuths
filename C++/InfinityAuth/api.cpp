@@ -85,7 +85,7 @@ namespace InfinityAuthV2 {
         return res.success;
     }
 
-    bool API::register_user(std::string username, std::string password, std::string key) {
+    bool API::reg(std::string username, std::string password, std::string key) {
         std::map<std::string, std::string> params;
         params["type"] = "register";
         params["username"] = username;

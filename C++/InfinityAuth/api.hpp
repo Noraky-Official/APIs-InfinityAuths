@@ -35,7 +35,7 @@ namespace InfinityAuthV2 {
         void setup(std::string name, std::string ownerid, std::string secret, std::string version);
         
         bool login(std::string username, std::string password);
-        bool register_user(std::string username, std::string password, std::string key);
+        bool reg(std::string username, std::string password, std::string key);
         bool license(std::string key);
         
         Response response;
