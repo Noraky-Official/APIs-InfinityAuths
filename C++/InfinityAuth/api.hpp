@@ -4,7 +4,7 @@
 #include <map>
 #include <windows.h>
 
-namespace InfinityAuthV2 {
+namespace InfinityAuth {
 
     struct Subscription {
         std::string subscription;
@@ -36,6 +36,9 @@ namespace InfinityAuthV2 {
         
         bool login(std::string username, std::string password);
         bool reg(std::string username, std::string password, std::string key);
+        bool register_user(std::string username, std::string password, std::string key) {
+            return reg(username, password, key);
+        }
         bool license(std::string key);
         
         Response response;
@@ -61,5 +64,5 @@ namespace InfinityAuthV2 {
     };
 }
 
-using InfinityAuthApp = InfinityAuthV2::API;
-using api = InfinityAuthV2::API;
+using InfinityAuthApp = InfinityAuth::API;
+using api = InfinityAuth::API;

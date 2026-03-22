@@ -6,10 +6,13 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream>
+#include <wincrypt.h>
+
+#pragma comment(lib, "advapi32.lib")
 
 using json = nlohmann::json;
 
-namespace InfinityAuthV2 {
+namespace InfinityAuth {
 
     API::API(std::string name, std::string ownerid, std::string secret, std::string version)
         : name(name), ownerid(ownerid), secret(secret), version(version) {
@@ -225,8 +228,6 @@ namespace InfinityAuthV2 {
 
     // --- AES-256-CBC / Windows CryptoAPI (Elite Standard) ---
     // Esta versão usa a importação direta da chave SHA256 para total compatibilidade com o servidor Node.js.
-    #include <wincrypt.h>
-    #pragma comment(lib, "advapi32.lib")
 
     // Estrutura para importar chave bruta para a CryptoAPI
     struct AES256KeyBlob {
